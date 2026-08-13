@@ -9,7 +9,7 @@ export function App () {
                 Prueba usuario {/* Children que nos permite tener mas de un elemento*/}
             </ TwitterFollowCard>
             
-            <TwitterFollowCard userName="tincho">
+            <TwitterFollowCard userName="tincho" initialIsFollowing>
                 Martin Maglione
             </ TwitterFollowCard>
 

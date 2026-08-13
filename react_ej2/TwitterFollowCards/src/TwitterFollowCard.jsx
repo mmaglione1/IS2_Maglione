@@ -1,7 +1,11 @@
 import { useState } from 'react'
 
-export function TwitterFollowCard ({children, userName = 'unknown', name}){
-    const [isFollowing, setIsFollowing] = useState(false)
+export function TwitterFollowCard ({children, userName = 'unknown', name, initialIsFollowing}){
+    {/* 
+        initialIsFollowing hace que al renderizar la pagina, 
+        se cargue el estado que establecemos en el elemento de 'App.jsx' 
+    */}
+    const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
 
     {/*renderizado condicional*/}
     const text = isFollowing ? 'Siguiendo' : 'Seguir'
