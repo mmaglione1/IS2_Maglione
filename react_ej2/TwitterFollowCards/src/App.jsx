@@ -33,7 +33,11 @@ export function App () {
                 users.map(user => {
                     const { userName, name, isFollowing } = user
                     return(
-                        <TwitterFollowCard userName={userName} initialIsFollowing={isFollowing}>
+                        <TwitterFollowCard 
+                            key={userName}
+                            userName={userName} 
+                            initialIsFollowing={isFollowing}
+                        >
                             {name}
                         </ TwitterFollowCard>
                     )
