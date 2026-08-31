@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Inicio - Sistema de Usuarios</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff007f 0%, #ff414d 50%, #ff6b35 100%);
+            --btn-pink: #ff007f;
+            --navbar-bg: #1c181b;
+            --footer-bg: #000000;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #212529;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        main { flex: 1; }
+        .custom-navbar {
+            background-color: var(--navbar-bg) !important;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .hero-section {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            padding: 3rem 1rem;
+        }
+        .custom-footer {
+            background-color: var(--footer-bg);
+            color: #888888;
+            padding: 1.5rem 0;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- BARRA DE NAVEGACIÓN -->
+<nav class="navbar navbar-expand navbar-dark custom-navbar py-2 px-3">
+    <div class="container-fluid px-md-5">
+        <a class="navbar-brand fw-bold text-uppercase" th:href="@{/inicio}">Sistema de Usuarios</a>
+        <div class="navbar-nav ms-auto gap-3 align-items-center">
+                <span class="text-white small d-none d-md-inline">
+                    <i class="bi bi-person-circle me-1"></i> <span th:text="${usuario.nombre + ' ' + usuario.apellido}">Usuario</span>
+                </span>
+            <a class="btn btn-outline-light btn-sm text-uppercase" th:href="@{/logout}">
+                <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <!-- HERO BANNER -->
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-6 fw-bold mb-2">¡Bienvenido/a al Sistema!</h1>
+            <p class="lead mb-0" th:text="'Hola ' + ${usuario.nombre} + ', has ingresado correctamente.'">Bienvenida al usuario</p>
+        </div>
+    </header>
+
+    <!-- DETALLE DEL PERFIL DEL USUARIO -->
+    <section class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold mb-0"><i class="bi bi-card-checklist me-2 text-primary"></i>Datos Registrados de la Persona</h5>
+                        <span class="badge bg-success">Cuenta Activa</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0">
+                                <tbody>
+                                <tr>
+                                    <th scope="row" class="w-35 bg-light"><i class="bi bi-person me-2"></i>Nombre Completo</th>
+                                    <td th:text="${usuario.nombre + ' ' + usuario.apellido}">Juan Pérez</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-envelope me-2"></i>Correo Personal (Usuario)</th>
+                                    <td th:text="${usuario.correoPersonal}">juan@correo.com</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-card-heading me-2"></i>Documento</th>
+                                    <td th:text="${usuario.documento}">12345678</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-calendar-event me-2"></i>Fecha de Nacimiento</th>
+                                    <td th:text="${usuario.fechaNacimiento}">1995-05-15</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-telephone me-2"></i>Teléfono</th>
+                                    <td th:text="${usuario.telefono != null and !usuario.telefono.isEmpty()} ? ${usuario.telefono} : 'No registrado'">-</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-geo-alt me-2"></i>Dirección</th>
+                                    <td th:text="${usuario.direccion != null and !usuario.direccion.isEmpty()} ? ${usuario.direccion} : 'No registrada'">-</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" class="bg-light"><i class="bi bi-shield-check me-2"></i>Estado de Seguridad</th>
+                                    <td>
+                                        <span class="text-success fw-semibold"><i class="bi bi-check2-circle me-1"></i>Habilitado (0 intentos fallidos)</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="custom-footer text-center">
+    <div class="container">
+        <p class="m-0">&copy; 2026 Sistema de Gestión de Usuarios - Arquitectura MVC & Spring Boot</p>
+    </div>
+</footer>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
