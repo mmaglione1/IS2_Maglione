@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Emitir Orden de Compra</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/productos}">
+            <i class="bi bi-cpu-fill text-primary me-2"></i>TechStore
+        </a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Inventario</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/ordenes}">Órdenes de Compra</a></li>
+            </ul>
+            <span class="text-light small">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span th:text="${usuario.nombreCompleto}">Operador</span>
+                </span>
+        </div>
+    </div>
+</nav>
+
+<!-- FORMULARIO DE ORDEN DE COMPRA -->
+<main class="container my-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Registrar Compra a Proveedor Mayorista</h2>
+            <p class="text-muted mb-0">Los productos y cantidades ingresados actualizarán automáticamente el stock disponible.</p>
+        </div>
+        <a th:href="@{/productos}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Inventario
+        </a>
+    </div>
+
+    <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}">Error al registrar orden</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form th:action="@{/ordenes/guardar}" th:object="${ordenCompraDTO}" method="POST">
+
+        <!-- TARJETA 1: SELECCIÓN DEL PROVEEDOR -->
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title fw-bold mb-0 text-primary">
+                    <i class="bi bi-building me-2"></i>1. Proveedor Mayorista
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="proveedorId" class="form-label fw-semibold">Seleccione el Proveedor *</label>
+                        <select class="form-select" id="proveedorId" th:field="*{proveedorId}" required>
+                            <option value="" disabled selected>-- Elija un mayorista --</option>
+                            <option th:each="prov : ${proveedores}"
+                                    th:value="${prov.id}"
+                                    th:text="${prov.razonSocial} + ' (CUIT: ' + ${prov.cuit} + ')'">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('proveedorId')}" th:errors="*{proveedorId}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETA 2: DETALLE DE PRODUCTOS A COMPRAR -->
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold mb-0 text-primary">
+                    <i class="bi bi-list-check me-2"></i>2. Detalle de Ítems Comprados
+                </h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="btnAgregarFila">
+                    <i class="bi bi-plus-lg me-1"></i> Añadir Ítem
+                </button>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle" id="tablaDetalles">
+                        <thead class="table-light">
+                        <tr>
+                            <th style="width: 45%;">Producto Tecnológico *</th>
+                            <th style="width: 20%;">Cantidad a Ingresar *</th>
+                            <th style="width: 25%;">Costo Unitario ($) *</th>
+                            <th style="width: 10%;" class="text-center">Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="detallesBody">
+                        <!-- Renglón Inicial -->
+                        <tr>
+                            <td>
+                                <select name="detalles[0].productoId" class="form-select" required>
+                                    <option value="" disabled selected>-- Seleccione producto --</option>
+                                    <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre} + ' (' + ${p.codigoSku} + ')'"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="detalles[0].cantidad" min="1" class="form-control" placeholder="Cant." required>
+                            </td>
+                            <td>
+                                <input type="number" step="0.01" min="0" name="detalles[0].precioUnitarioCompra" class="form-control" placeholder="Precio unitario" required>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-fila disabled">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTONES DE CONFIRMACIÓN -->
+        <div class="d-flex justify-content-end gap-2">
+            <a th:href="@{/productos}" class="btn btn-outline-secondary px-4">Cancelar</a>
+            <button type="submit" class="btn btn-success fw-semibold px-5 py-2">
+                <i class="bi bi-check2-circle me-1"></i> Confirmar y Actualizar Stock
+            </button>
+        </div>
+
+    </form>
+
+</main>
+
+<!-- Script JavaScript para añadir dinámicamente renglones a la tabla -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const productosDisponibles = /*[[${productos}]]*/ [];
+    let filaIndex = 1;
+
+    document.getElementById('btnAgregarFila').addEventListener('click', function() {
+        const tbody = document.getElementById('detallesBody');
+
+        let optionsHtml = '<option value="" disabled selected>-- Seleccione producto --</option>';
+        productosDisponibles.forEach(prod => {
+            optionsHtml += `<option value="${prod.id}">${prod.nombre} (${prod.codigoSku})</option>`;
+        });
+
+        const nuevaFila = document.createElement('tr');
+        nuevaFila.innerHTML = `
+                <td>
+                    <select name="detalles[${filaIndex}].productoId" class="form-select" required>
+                        ${optionsHtml}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="detalles[${filaIndex}].cantidad" min="1" class="form-control" placeholder="Cant." required>
+                </td>
+                <td>
+                    <input type="number" step="0.01" min="0" name="detalles[${filaIndex}].precioUnitarioCompra" class="form-control" placeholder="Precio unitario" required>
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-eliminar-fila">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
+        tbody.appendChild(nuevaFila);
+        filaIndex++;
+        actualizarBotonesEliminar();
+    });
+
+    document.getElementById('detallesBody').addEventListener('click', function(e) {
+        if (e.target.closest('.btn-eliminar-fila')) {
+            const filas = document.querySelectorAll('#detallesBody tr');
+            if (filas.length > 1) {
+                e.target.closest('tr').remove();
+                actualizarBotonesEliminar();
+            }
+        }
+    });
+
+    function actualizarBotonesEliminar() {
+        const filas = document.querySelectorAll('#detallesBody tr');
+        const botones = document.querySelectorAll('.btn-eliminar-fila');
+        if (filas.length === 1) {
+            botones[0].classList.add('disabled');
+        } else {
+            botones.forEach(btn => btn.classList.remove('disabled'));
+        }
+    }
+    /*]]>*/
+</script>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
