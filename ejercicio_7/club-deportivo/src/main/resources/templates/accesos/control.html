@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Control de Accesos')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav th:replace="~{layout :: navbar}"></nav>
+
+<main class="container my-4">
+    <!-- Alertas -->
+    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row g-4">
+        <!-- Formulario de Registro de Entrada/Salida -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="card-title fw-bold mb-0"><i class="bi bi-person-check me-2"></i>Marcación Facial</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/accesos/registrar}" th:object="${accesoRequestDTO}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">DNI Persona *</label>
+                            <input type="text" th:field="*{dni}" class="form-control" placeholder="Ingrese DNI" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Tipo de Movimiento *</label>
+                            <select th:field="*{tipoAcceso}" class="form-select" required>
+                                <option value="ENTRADA">ENTRADA</option>
+                                <option value="SALIDA">SALIDA</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Captura Rostro (Opcional)</label>
+                            <input type="file" th:field="*{capturaRostro}" class="form-control" accept="image/*">
+                            <small class="text-muted">Si no se adjunta, se toma la foto del padrón.</small>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-semibold py-2">
+                            <i class="bi bi-check2-circle me-1"></i> Registrar Acceso
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Monitoreo en Tiempo Real -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-white py-3">
+                    <h5 class="card-title fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-2"></i>Últimos Movimientos en Puerta</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-dark">
+                            <tr>
+                                <th class="ps-3">Rostro</th>
+                                <th>Fecha y Hora</th>
+                                <th>DNI</th>
+                                <th>Nombre y Grupo</th>
+                                <th>Movimiento</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="acc : ${accesosRecientes}">
+                                <td class="ps-3">
+                                    <img th:src="@{'/foto/acceso/' + ${acc.id}}"
+                                         onerror="this.src='https://dummyimage.com/60x60/dee2e6/6c757d.jpg&text=Sin+Foto';"
+                                         class="rounded-circle border" style="width: 50px; height: 50px; object-fit: cover;">
+                                </td>
+                                <td th:text="${#temporals.format(acc.fechaHora, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                                <td class="fw-bold" th:text="${acc.dni}"></td>
+                                <td th:text="${acc.nombreCompleto}"></td>
+                                <td>
+                                            <span class="badge px-3 py-2"
+                                                  th:classappend="${acc.tipoAcceso.name() == 'ENTRADA'} ? 'bg-success' : 'bg-warning text-dark'"
+                                                  th:text="${acc.tipoAcceso}"></span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(accesosRecientes)}">
+                                <td colspan="5" class="text-center py-4 text-muted">No hay movimientos registrados hoy.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+<th:block th:replace="~{layout :: scripts}"></th:block>
+</body>
+</html>
