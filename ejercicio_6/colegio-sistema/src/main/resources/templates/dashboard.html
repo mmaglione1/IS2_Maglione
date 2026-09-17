@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Panel Principal - Colegio')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav th:replace="~{layout :: navbar}"></nav>
+
+<main class="container my-5">
+
+    <div th:if="${exito != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${exito}">Éxito</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="p-5 mb-4 bg-white rounded-4 shadow-sm border">
+        <div class="container-fluid py-2">
+            <h1 class="display-6 fw-bold text-dark">Bienvenido/a, <span th:text="${docente.nombreCompleto}">Profesor</span></h1>
+            <p class="col-md-8 fs-5 text-muted">Panel central de gestión escolar, matriculación de alumnos y asentamiento de calificaciones.</p>
+            <hr class="my-4">
+            <div class="d-flex gap-3">
+                <a th:href="@{/alumnos}" class="btn btn-primary fw-semibold"><i class="bi bi-people me-1"></i> Gestionar Alumnos</a>
+                <a th:href="@{/notas/cargar}" class="btn btn-outline-dark fw-semibold"><i class="bi bi-journal-plus me-1"></i> Cargar Notas</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-3 text-center">
+                <i class="bi bi-people-fill text-primary display-4 mb-2"></i>
+                <h3 class="fw-bold" th:text="${totalAlumnos}">0</h3>
+                <p class="text-muted mb-0">Alumnos Matriculados</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-3 text-center">
+                <i class="bi bi-door-open-fill text-success display-4 mb-2"></i>
+                <h3 class="fw-bold" th:text="${totalAulas}">0</h3>
+                <p class="text-muted mb-0">Grados y Aulas Activas</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 rounded-3 text-center">
+                <i class="bi bi-book-fill text-warning display-4 mb-2"></i>
+                <h3 class="fw-bold" th:text="${totalMaterias}">0</h3>
+                <p class="text-muted mb-0">Materias Curriculares</p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+<th:block th:replace="~{layout :: scripts}"></th:block>
+</body>
+</html>

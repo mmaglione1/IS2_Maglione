@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Listado de Alumnos')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav th:replace="~{layout :: navbar}"></nav>
+
+<main class="container my-4">
+
+    <div th:if="${exito != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${exito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Padrón de Alumnos</h2>
+            <p class="text-muted mb-0">Estudiantes registrados con su respectivo grado y aula</p>
+        </div>
+        <a th:href="@{/alumnos/nuevo}" class="btn btn-primary fw-semibold">
+            <i class="bi bi-person-plus me-1"></i> Matricular Alumno
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th class="ps-4">Documento</th>
+                        <th>Apellidos y Nombres</th>
+                        <th>Grado y Aula</th>
+                        <th class="text-center pe-4">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="al : ${alumnos}">
+                        <td class="ps-4 fw-bold" th:text="${al.documento}"></td>
+                        <td class="fw-semibold" th:text="${al.nombreCompleto}"></td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${al.ubicacionGradoAula}"></span>
+                        </td>
+                        <td class="text-center pe-4">
+                            <a th:href="@{'/notas/boletin/' + ${al.id}}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-journal-text me-1"></i> Ver Boletín
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(alumnos)}">
+                        <td colspan="4" class="text-center py-4 text-muted">No hay alumnos registrados.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+<th:block th:replace="~{layout :: scripts}"></th:block>
+</body>
+</html>

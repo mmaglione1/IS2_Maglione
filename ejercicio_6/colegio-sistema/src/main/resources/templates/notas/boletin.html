@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Boletín Escolar')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav th:replace="~{layout :: navbar}"></nav>
+
+<main class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Boletín de Calificaciones</h2>
+            <p class="text-muted mb-0" th:text="'Alumno: ' + ${alumno.nombreCompleto} + ' | Documento: ' + ${alumno.documento} + ' | Grado/Aula: ' + ${alumno.ubicacionGradoAula}"></p>
+        </div>
+        <a th:href="@{/alumnos}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver a Alumnos
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th class="ps-4">Materia</th>
+                        <th>Período</th>
+                        <th>Fecha</th>
+                        <th class="text-center pe-4">Calificación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="n : ${notas}">
+                        <td class="ps-4 fw-semibold text-dark" th:text="${n.materiaNombre}"></td>
+                        <td th:text="${n.periodo}"></td>
+                        <td th:text="${n.fechaEvaluacion}"></td>
+                        <td class="text-center pe-4">
+                                    <span class="badge fs-6 px-3 py-2"
+                                          th:classappend="${n.calificacion >= 6.0} ? 'bg-success' : 'bg-danger'"
+                                          th:text="${n.calificacion}"></span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(notas)}">
+                        <td colspan="4" class="text-center py-4 text-muted">El alumno aún no registra calificaciones cargadas.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout :: footer}"></footer>
+<th:block th:replace="~{layout :: scripts}"></th:block>
+</body>
+</html>

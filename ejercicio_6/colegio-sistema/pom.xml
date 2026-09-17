@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ========================================================================= -->
+    <!-- SPRING BOOT STARTER PARENT: Define versiones estables y compatibles       -->
+    <!-- ========================================================================= -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.3</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.colegio</groupId>
+    <artifactId>colegio-sistema</artifactId>
+    <version>1.0.0</version>
+    <name>colegio-sistema</name>
+    <description>Sistema de Gestión Escolar con Spring Boot MVC, Thymeleaf, MySQL, Auditoría Envers y Spring Security</description>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- ===================================================================== -->
+        <!-- 1. CAPA WEB Y ARQUITECTURA MVC (Spring Web)                           -->
+        <!-- Gestiona peticiones HTTP, controladores @Controller y servidor Tomcat -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 2. CAPA DE PRESENTACIÓN / VISTAS (Thymeleaf)                          -->
+        <!-- Motor de plantillas server-side para integrar con Bootstrap 5         -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- Integración entre Thymeleaf y Spring Security (sec:authorize, etc.)   -->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 3. CAPA DE SEGURIDAD (Spring Security)                                -->
+        <!-- Autenticación por login, encriptación BCrypt y control de acceso      -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 4. CAPA DE PERSISTENCIA / ORM (Spring Data JPA con Hibernate)         -->
+        <!-- Mapeo objeto-relacional de entidades a tablas de base de datos        -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 5. AUDITORÍA DE ENTIDADES (Hibernate Envers)                          -->
+        <!-- Crea y mantiene tablas de auditoría (_AUD) con historial de cambios   -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-envers</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 6. DRIVER OFICIAL DE CONEXIÓN A BASE DE DATOS MYSQL                   -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 7. SERVICIO DE ENVÍO DE CORREOS (JavaMailSender / SMTP)              -->
+        <!-- Para enviar el correo de bienvenida al registrarse el docente         -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 8. VALIDACIONES DE FORMULARIO Y DTOS (Jakarta Validation / Bean Valid) -->
+        <!-- Anotaciones @NotBlank, @Email, @NotNull, @Size                        -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ===================================================================== -->
+        <!-- 9. LOMBOK: Generación automática de Getters, Setters y Constructores  -->
+        <!-- ===================================================================== -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Herramienta de desarrollo: Recarga rápida de plantillas y clases      -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Testing básico de Spring Boot                                         -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin para compilar y empaquetar el ejecutable JAR de Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

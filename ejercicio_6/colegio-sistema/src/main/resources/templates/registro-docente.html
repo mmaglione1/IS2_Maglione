@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Registro de Docentes')}"></head>
+<body class="bg-light d-flex flex-column min-vh-100 justify-content-center py-5">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="text-center mb-4">
+                <i class="bi bi-person-badge-fill text-primary display-4"></i>
+                <h2 class="fw-bold mt-2">Registro de Docente</h2>
+                <p class="text-muted">Complete sus datos personales para habilitar su acceso</p>
+            </div>
+
+            <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <span th:text="${error}">Error en el registro</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    <form th:action="@{/registro-docente}" th:object="${registroDocenteDTO}" method="POST">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Nombre *</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ej. María" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Apellido *</label>
+                                <input type="text" class="form-control" th:field="*{apellido}" placeholder="Ej. Gómez" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Sexo *</label>
+                                <select class="form-select" th:field="*{sexo}" required>
+                                    <option value="" disabled selected>-- Seleccione --</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('sexo')}" th:errors="*{sexo}"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Fecha de Nacimiento *</label>
+                                <input type="date" class="form-control" th:field="*{fechaNacimiento}" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Correo Personal (Usuario de Acceso) *</label>
+                            <input type="email" class="form-control" th:field="*{correoPersonal}" placeholder="profesora@correo.com" required>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('correoPersonal')}" th:errors="*{correoPersonal}"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Contraseña *</label>
+                                <input type="password" class="form-control" th:field="*{clave}" placeholder="Mínimo 6 caracteres" required>
+                                <div class="text-danger small" th:if="${#fields.hasErrors('clave')}" th:errors="*{clave}"></div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-semibold">Confirmar Contraseña *</label>
+                                <input type="password" class="form-control" th:field="*{confirmarClave}" placeholder="Repita la contraseña" required>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary fw-semibold py-2">
+                                <i class="bi bi-person-check me-1"></i> Registrarse y Enviar Correo
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <span class="text-muted small">¿Ya posee cuenta? </span>
+                            <a th:href="@{/login}" class="small fw-semibold text-decoration-none">Iniciar Sesión</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
