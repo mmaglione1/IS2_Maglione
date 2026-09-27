@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,6 +55,7 @@ class ClubServiceTest {
     @DisplayName("Debe registrar acceso exitosamente si el DNI pertenece a un socio titular")
     void testRegistrarAccesoExitoso() {
         when(socioRepository.findByDni("40123456")).thenReturn(Optional.of(socioMock));
+        when(accesoRepository.findTopByDniPersonaOrderByFechaHoraDesc("40123456")).thenReturn(Optional.empty());
         when(accesoRepository.save(any(RegistroAcceso.class))).thenAnswer(i -> {
             RegistroAcceso r = i.getArgument(0);
             r.setId(10L);
@@ -86,6 +88,75 @@ class ClubServiceTest {
 
         assertThrows(IllegalArgumentException.class, () -> clubService.registrarAcceso(dto));
         verify(accesoRepository, never()).save(any(RegistroAcceso.class));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción si intenta ENTRADA y el último acceso ya fue ENTRADA (doble entrada consecutiva)")
+    void testRegistrarAccesoDobleEntrada() {
+        when(socioRepository.findByDni("40123456")).thenReturn(Optional.of(socioMock));
+        RegistroAcceso ultimoAcceso = RegistroAcceso.builder()
+                .id(1L)
+                .dniPersona("40123456")
+                .nombreCompleto("Lionel Messi (Titular)")
+                .tipoAcceso(TipoAcceso.ENTRADA)
+                .fechaHora(LocalDateTime.now().minusHours(1))
+                .build();
+        when(accesoRepository.findTopByDniPersonaOrderByFechaHoraDesc("40123456")).thenReturn(Optional.of(ultimoAcceso));
+
+        AccesoRequestDTO dto = AccesoRequestDTO.builder()
+                .dni("40123456")
+                .tipoAcceso(TipoAcceso.ENTRADA)
+                .build();
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> clubService.registrarAcceso(dto));
+        assertTrue(ex.getMessage().contains("ya se encuentra dentro de las instalaciones"));
+        verify(accesoRepository, never()).save(any(RegistroAcceso.class));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción si intenta SALIDA sin registrar una ENTRADA previa")
+    void testRegistrarAccesoSalidaSinEntrada() {
+        when(socioRepository.findByDni("40123456")).thenReturn(Optional.of(socioMock));
+        when(accesoRepository.findTopByDniPersonaOrderByFechaHoraDesc("40123456")).thenReturn(Optional.empty());
+
+        AccesoRequestDTO dto = AccesoRequestDTO.builder()
+                .dni("40123456")
+                .tipoAcceso(TipoAcceso.SALIDA)
+                .build();
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> clubService.registrarAcceso(dto));
+        assertTrue(ex.getMessage().contains("no registra un ingreso previo"));
+        verify(accesoRepository, never()).save(any(RegistroAcceso.class));
+    }
+
+    @Test
+    @DisplayName("Debe permitir SALIDA si el último movimiento fue ENTRADA")
+    void testRegistrarAccesoSalidaValida() {
+        when(socioRepository.findByDni("40123456")).thenReturn(Optional.of(socioMock));
+        RegistroAcceso ultimoAcceso = RegistroAcceso.builder()
+                .id(1L)
+                .dniPersona("40123456")
+                .nombreCompleto("Lionel Messi (Titular)")
+                .tipoAcceso(TipoAcceso.ENTRADA)
+                .fechaHora(LocalDateTime.now().minusHours(2))
+                .build();
+        when(accesoRepository.findTopByDniPersonaOrderByFechaHoraDesc("40123456")).thenReturn(Optional.of(ultimoAcceso));
+        when(accesoRepository.save(any(RegistroAcceso.class))).thenAnswer(i -> {
+            RegistroAcceso r = i.getArgument(0);
+            r.setId(11L);
+            return r;
+        });
+
+        AccesoRequestDTO dto = AccesoRequestDTO.builder()
+                .dni("40123456")
+                .tipoAcceso(TipoAcceso.SALIDA)
+                .build();
+
+        AccesoResponseDTO response = clubService.registrarAcceso(dto);
+
+        assertNotNull(response);
+        assertEquals(TipoAcceso.SALIDA, response.getTipoAcceso());
+        verify(accesoRepository, times(1)).save(any(RegistroAcceso.class));
     }
 
     @Test

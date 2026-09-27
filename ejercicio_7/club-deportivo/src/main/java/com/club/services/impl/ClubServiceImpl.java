@@ -114,6 +114,18 @@ public class ClubServiceImpl implements ClubService {
             }
         }
 
+        // Validación de coherencia de accesos (no permitir dos entradas consecutivas ni salida sin entrada previa)
+        Optional<RegistroAcceso> ultimoAccesoOpt = accesoRepository.findTopByDniPersonaOrderByFechaHoraDesc(dto.getDni());
+        if (dto.getTipoAcceso() == TipoAcceso.ENTRADA) {
+            if (ultimoAccesoOpt.isPresent() && ultimoAccesoOpt.get().getTipoAcceso() == TipoAcceso.ENTRADA) {
+                throw new IllegalArgumentException("La persona ya se encuentra dentro de las instalaciones. Debe registrar una SALIDA antes de volver a ingresar.");
+            }
+        } else if (dto.getTipoAcceso() == TipoAcceso.SALIDA) {
+            if (ultimoAccesoOpt.isEmpty() || ultimoAccesoOpt.get().getTipoAcceso() == TipoAcceso.SALIDA) {
+                throw new IllegalArgumentException("No se puede registrar la SALIDA ya que la persona no registra un ingreso previo o ya se encuentra fuera.");
+            }
+        }
+
         // Si se envió captura instantánea en la solicitud, se prioriza
         if (dto.getCapturaRostro() != null && !dto.getCapturaRostro().isEmpty()) {
             try {
