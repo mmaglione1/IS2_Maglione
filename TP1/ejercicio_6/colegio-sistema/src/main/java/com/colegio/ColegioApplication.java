@@ -2,6 +2,7 @@ package com.colegio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * ============================================================================
@@ -15,8 +16,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *   1. @Configuration: Permite definir beans adicionales en el contexto.
  *   2. @EnableAutoConfiguration: Configura DataSource, JPA, Mail y Thymeleaf.
  *   3. @ComponentScan: Escanea entidades, repositorios, servicios y controladores.
+ * - @EnableAsync: Habilita el procesamiento asíncrono para métodos como el envío de emails.
  */
 @SpringBootApplication
+@EnableAsync
 public class ColegioApplication {
 
     /**

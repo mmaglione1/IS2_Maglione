@@ -33,7 +33,7 @@ public class EmailService {
             MimeMessage mensaje = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, "UTF-8");
 
-            helper.setFrom("notificaciones@colegio.edu.ar");
+            helper.setFrom("colegio.welcome.2026@gmail.com");
             helper.setTo(destinatario);
             helper.setSubject("¡Bienvenido/a al Sistema de Gestión Escolar!");
 
