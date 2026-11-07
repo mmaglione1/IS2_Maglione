@@ -10,3 +10,9 @@ En este repositorio se encuentran todas las actividades individuales realizadas 
   Ejercicio 5 - MVC con login de usuarios  
   Ejercicio 6 - MVC + React  
   Ejercicio 7 - MVC con Testing
+
+### Trabajo práctico 2
+  Ejercicios 1 y 5 - ABM Productos
+  Ejercicio  2     - App de Clima
+  Ejercicio  3     - ABM de Futbolistas
+  Ejercicio  4     - Guía de Patrones
